@@ -1,0 +1,7 @@
+{>"layout/index" /}
+{<main}
+
+Hello {name}, how are you today?
+<br> Fine, thanks
+
+{/main}
