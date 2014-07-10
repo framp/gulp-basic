@@ -7,11 +7,15 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var imagemin = require('gulp-imagemin');
 var pngcrush = require('imagemin-pngcrush');
+var dust = require('dustjs-linkedin');
+dust.helpers = require('dustjs-helpers').helpers;
+require('dustjs-helper-repeat');
 var dusthtml = require('gulp-dust-html');
 var watch = require('gulp-watch');
 var open = require('gulp-open');
 var connect = require('gulp-connect');
 var fs = require('fs');
+
 
 var dest = 'public';
 var data = require('./data.json');
