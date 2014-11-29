@@ -1,1 +1,0 @@
-(function(){dust.register("layout/header.dust",body_0);function body_0(chk,ctx){return chk.write("HEADER");}return body_0;})();

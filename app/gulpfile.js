@@ -17,7 +17,7 @@ var connect = require('gulp-connect');
 var fs = require('fs');
 
 
-var dest = 'public';
+var dest = '..';
 var data = require('./data.json');
 
 gulp.task('process-css', function() {
@@ -41,7 +41,7 @@ gulp.task('process-js', function() {
     .pipe(connect.reload());
 });
 
-gulp.task('process-img', function () {
+gulp.task('process-image', function () {
   return gulp.src('img/**/*')
     .pipe(imagemin({
         progressive: true,
@@ -74,7 +74,7 @@ gulp.task('data', function() {
   });
 });
 
-gulp.task('open', function(){
+gulp.task('open', function() {
   gulp.src('gulpfile.js')
   .pipe(open("",{
     url: 'http://localhost:8080'
@@ -88,5 +88,7 @@ gulp.task('watch', function () {
   gulp.watch('templates/**/*.dust', ['process-html']);
   gulp.watch('data.json', ['data', 'process-html']);
 });
+
+gulp.task('build', ['process-html', 'process-css', 'process-js', 'process-image']);
 
 gulp.task('default', ['connect', 'open', 'watch']);
