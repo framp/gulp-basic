@@ -1,8 +1,10 @@
 //General
 var fs = require('fs');
+var path = require('path');
 var gulp = require('gulp');
 var rename = require('gulp-rename');
 var concat = require('gulp-concat');
+var data = require('gulp-data');
 var sourcemaps = require('gulp-sourcemaps');
 //Stylesheets
 var sass = require('gulp-sass');
@@ -22,8 +24,6 @@ var open = require('gulp-open');
 var connect = require('gulp-connect');
 //Destination
 var dest = '..';
-//Data
-var data = require('./data.json');
 
 gulp.task('process-css', function() {
   return gulp.src('css/**/main.scss')
@@ -59,7 +59,9 @@ gulp.task('process-image', function () {
         svgoPlugins: [{removeViewBox: false}],
         use: [pngcrush()]
     }))
-    .pipe(gulp.dest(dest + '/img/'));
+    .pipe(gulp.dest(dest + '/img/'))
+    .pipe(connect.reload());
+
 });
 
 gulp.task('process-html', function () {
@@ -67,21 +69,20 @@ gulp.task('process-html', function () {
     partialsDirectory: ['./templates/partials', './templates/layouts']
   };
   return gulp.src('templates/**/index.hbs')
+        .pipe(data(function(file) {
+          var content = './content/en-US/' + path.basename(file.path) + '.json';
+          return JSON.parse(fs.readFileSync(content));
+        }))
         .pipe(handlebars(data, options))
         .pipe(rename({extname: ".html"}))
-        .pipe(gulp.dest(dest));
+        .pipe(gulp.dest(dest))
+        .pipe(connect.reload());
 });
 
 gulp.task('connect', function() {
   connect.server({
     root: dest,
     livereload: true
-  });
-});
-
-gulp.task('data', function() {
-  fs.readFile('./data.json', function(err, doc){
-    data = JSON.parse(doc);
   });
 });
 
@@ -97,7 +98,7 @@ gulp.task('watch', function () {
   gulp.watch('css/**/*.scss', ['process-css']);
   gulp.watch('img/**/*', ['process-image']);
   gulp.watch('templates/**/*.dust', ['process-html']);
-  gulp.watch('data.json', ['data', 'process-html']);
+  gulp.watch('content/**/*.json', ['process-html']);
 });
 
 gulp.task('build', ['process-html', 'process-css', 'process-js', 'process-image', 'default']);
