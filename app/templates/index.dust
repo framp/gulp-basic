@@ -1,7 +1,0 @@
-{>"layout/index" /}
-{<main}
-Hello {name}, how are you today?
-<br> Fine, thanks
-<br>
-{@repeat start=1 times=12 }<!--{$key}-->Na{/repeat}... Batman
-{/main}

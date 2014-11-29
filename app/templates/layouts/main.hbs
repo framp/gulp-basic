@@ -11,12 +11,11 @@
 </head>
 
 <body>
-  <div>^^^^^</div>  <div>
-      Hello world, how are you today?
-    <br> Fine, thanks
-
+  {{> header}}
+  <div>
+  {{#block "body"}}Def{{/block}}
   </div>
-  <div>_____</div></body>
+  {{> footer}}
+</body>
 
 </html>
-LOL
