@@ -1,5 +1,0 @@
-gulp-cached
-gulp-changed
-gulp-remember
-
-loading data on the fly 
