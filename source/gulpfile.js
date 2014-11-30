@@ -69,10 +69,13 @@ gulp.task('process-stylesheets', function() {
 });
 gulp.task('clean-stylesheets', function() {
   return gulp.src('stylesheets/**/index.scss')
+    .pipe(rename({
+      extname: ".css"
+    }))
     .pipe(gulp.dest(dest + '/stylesheets'))
     .pipe(vinylPaths(fs.unlink))
     .pipe(rename({
-      suffix: '.v' + version + '.min'
+      suffix: '.v' + version + '.min',
     }))
     .pipe(vinylPaths(fs.unlink));
 });
