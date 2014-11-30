@@ -24,8 +24,7 @@ gulp.task('watch', function() {
 
 gulp.task('clean-all', ['clean-templates', 'clean-stylesheets', 'clean-scripts', 'clean-images']);
 gulp.task('process-all', ['process-templates', 'process-stylesheets', 'process-scripts', 'process-images']);
-gulp.task('build', ['process-all', 'default']);
 gulp.task('deploy', ['clean-all', 'prepare-deploy'], function(){
   gulp.start('process-all');
 });
-gulp.task('default', ['connect', 'open', 'watch']);
+gulp.task('default', ['process-all', 'connect', 'open', 'watch']);
