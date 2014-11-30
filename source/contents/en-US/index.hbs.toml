@@ -1,0 +1,3 @@
+title = "Welcome"
+question = "Hello {{name}}, how are you today?"
+answer = "Fine, thanks. My version is {{__version}} and debug is {{__debug}}"

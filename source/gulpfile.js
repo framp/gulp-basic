@@ -1,7 +1,8 @@
 //General
+var _ = require('lodash');
+var async = require('async');
 var fs = require('fs');
 var path = require('path');
-var del = fs.unlink;
 var argv = require('minimist')(process.argv);
 var gulp = require('gulp');
 var rename = require('gulp-rename');
@@ -12,6 +13,7 @@ var watch = require('gulp-watch');
 var open = require('gulp-open');
 var connect = require('gulp-connect');
 var data = require('gulp-data');
+var topl = require('topl');
 var vinylPaths = require('vinyl-paths');
 //Stylesheets
 var sass = require('gulp-sass');
@@ -26,11 +28,20 @@ var pngcrush = require('imagemin-pngcrush');
 //Templates
 var Handlebars = require('handlebars');
 require('handlebars-layouts')(Handlebars);
+Handlebars.registerHelper('tr', function(context, options){
+  if (!options.data.root.__language[context])
+    return options.fn(this);
+  var template = Handlebars.compile(options.data.root.__language[context]);
+  return template(options.data.root);  
+});
 var handlebars = require('gulp-handlebars-html')();
 
 var dest = argv['dest'] || '..';
 var version = argv['version'] || 0;
 var environment = process.env.NODE_ENV || argv['environment'] || 'development';
+
+var languages = require('fs').readdirSync('./contents');
+var defaultLanguage = 'en-US';
 
 if (fs.existsSync(dest + '/build'))
   version = parseInt(fs.readFileSync(dest + '/build'));
@@ -59,11 +70,11 @@ gulp.task('process-stylesheets', function() {
 gulp.task('clean-stylesheets', function() {
   return gulp.src('stylesheets/**/index.scss')
     .pipe(gulp.dest(dest + '/stylesheets'))
-    .pipe(vinylPaths(del))
+    .pipe(vinylPaths(fs.unlink))
     .pipe(rename({
       suffix: '.v' + version + '.min'
     }))
-    .pipe(vinylPaths(del));
+    .pipe(vinylPaths(fs.unlink));
 });
 
 gulp.task('process-scripts', function() {
@@ -85,17 +96,16 @@ gulp.task('process-scripts', function() {
 gulp.task('clean-scripts', function() {
   return gulp.src('scripts/**/index.js')
     .pipe(gulp.dest(dest + '/scripts'))
-    .pipe(vinylPaths(del))
+    .pipe(vinylPaths(fs.unlink))
     .pipe(rename({
       suffix: '.v' + version + '.min'
     }))
-    .pipe(vinylPaths(del));
+    .pipe(vinylPaths(fs.unlink));
 });
 
 gulp.task('process-images', function() {
   return gulp.src('images/**/*')
     .pipe(cache('images'))
-
     .pipe(imagemin({
       progressive: true,
       svgoPlugins: [{
@@ -116,10 +126,10 @@ gulp.task('clean-images', function() {
       suffix: '.v' + version + '.min'
     }))
     .pipe(gulp.dest(dest + '/images/'))
-    .pipe(vinylPaths(del));
+    .pipe(vinylPaths(fs.unlink));
 });
 
-gulp.task('process-templates', function() {
+gulp.task('process-templates', function(cb) {
   var options = {
     partialsDirectory: ['./templates/partials', './templates/layouts']
   };
@@ -127,25 +137,38 @@ gulp.task('process-templates', function() {
     __version: version,
     __debug: environment !== 'production'
   }
-  return gulp.src('templates/**/index.hbs')
-    .pipe(data(function(file) {
-      var content = './content/en-US/' + path.basename(file.path) + '.json';
-      return JSON.parse(fs.readFileSync(content));
-    }))
-    .pipe(handlebars(context, options))
-    .pipe(rename({
-      extname: ".html"
-    }))
-    .pipe(gulp.dest(dest))
-    .pipe(connect.reload());
+  async.map(languages, function(language, done){
+    var languageDest = dest + (language !== defaultLanguage ? '/' + language : '');
+    gulp.src('templates/**/index.hbs')
+      .pipe(data(function(file) {
+        var data = './data/' + path.basename(file.path) + '.json';
+        var result = JSON.parse(fs.readFileSync(data));
+        var contentPartials = './contents/' + language + '/partials.toml';
+        var content = './contents/' + language + '/' + path.basename(file.path) + '.toml';
+        result.__language = topl.parse(fs.readFileSync(contentPartials));
+        _.merge(result.__language, topl.parse(fs.readFileSync(content)));
+        return result;
+      }))
+      .pipe(handlebars(context, options))
+      .pipe(rename({
+        extname: ".html"
+      }))
+      .pipe(gulp.dest(languageDest))
+      .pipe(connect.reload())
+      .on('end', done);
+  }, cb);
 });
-gulp.task('clean-templates', function() {
-  return gulp.src('templates/**/index.hbs')
-    .pipe(rename({
-      extname: ".html"
-    }))
-    .pipe(gulp.dest(dest))
-    .pipe(vinylPaths(del));
+gulp.task('clean-templates', function(cb) {
+  async.map(languages, function(language, done){
+    var languageDest = dest + (language !== defaultLanguage ? '/' + language : '');
+    gulp.src('templates/**/index.hbs')
+      .pipe(rename({
+        extname: ".html"
+      }))
+      .pipe(gulp.dest(languageDest))
+      .pipe(vinylPaths(fs.unlink))
+      .on('end', done);
+  }, cb);
 });
 
 gulp.task('connect', function() {
@@ -168,6 +191,7 @@ gulp.task('watch', function() {
   gulp.watch('images/**/*', ['process-images']);
   gulp.watch('templates/**/*', ['process-templates']);
   gulp.watch('contents/**/*', ['process-templates']);
+  gulp.watch('data/**/*', ['process-templates']);
 });
 
 gulp.task('clean-all', ['clean-templates', 'clean-stylesheets', 'clean-scripts', 'clean-images']);
