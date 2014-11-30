@@ -82,6 +82,8 @@ The default language, will be generated in the root of the destination folder. A
 
 The default language is the one whose directory in `/contents` starts with a `_`.
 
+If you need to provide translations which are common in different pages you can simply insert them in the `/contents/ln-LN/partials.toml` file: it will be used in all your pages.
+
 You'll be able to use your strings in templates using the [handlebars-tr](https://github.com/framp/handlebars-tr) plugin. Your translations will have access to the whole context, letting you use variables in them.
 
     data/index.json 
@@ -104,7 +106,7 @@ You'll be able to use your strings in templates using the [handlebars-tr](https:
 
 This small example will generate `$dest/index.html` in `en-US` and `$dest/it-IT/index.html` in `it-IT`.
 
-We chose [toml](https://github.com/toml-lang/toml) over [JSON](http://www.json.org/) for language files because it's easier for such a flat structure.
+We chose [toml](https://github.com/toml-lang/toml) over [JSON](http://www.json.org/) for language files because it's easier to use for such a flat structure.
 
 ###Images
 All the images you put inside will be optimized and copied to `$dest/images`. 
@@ -130,6 +132,7 @@ The main gulpfile only defines the main commands you can run with gulp-start, de
 
 ####templates.js
 We load the languages from `/contents` and create a gulp stream for each language and setup handlebars and its helpers. Feel free to throw in more helpers if you need to.
+
 For each stream we load data and contents with [gulp-data](https://github.com/colynb/gulp-data) and pipe everything to [gulp-handlebars-html](https://github.com/framp/gulp-handlebars-html).
 
 ####images.js
