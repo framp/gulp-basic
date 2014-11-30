@@ -13,9 +13,13 @@ var rename = require('gulp-rename');
 var connect = require('gulp-connect');
 var vinylPaths = require('vinyl-paths');
 
-module.exports = function(gulp, $){
+module.exports = function(gulp, $){ 
   var languages = fs.readdirSync('./contents');
-  var defaultLanguage = 'en-US';
+  var defaultLanguage = languages[0];
+  languages.forEach(function(language, key){
+    if (language[0]==='_')
+      defaultLanguage = language;
+  });
   
   gulp.task('process-templates', function(cb) {
     var options = {
@@ -29,10 +33,11 @@ module.exports = function(gulp, $){
       var languageDest = $.dest + (language !== defaultLanguage ? '/' + language : '');
       gulp.src('templates/**/index.hbs')
         .pipe(data(function(file) {
-          var data = './data/' + path.basename(file.path) + '.json';
+          var name = path.basename(file.path, path.extname(file.path));
+          var data = './data/' + name + '.json';
           var result = JSON.parse(fs.readFileSync(data));
           var contentPartials = './contents/' + language + '/partials.toml';
-          var content = './contents/' + language + '/' + path.basename(file.path) + '.toml';
+          var content = './contents/' + language + '/' + name + '.toml';
           result.__language = topl.parse(fs.readFileSync(contentPartials));
           _.merge(result.__language, topl.parse(fs.readFileSync(content)));
           return result;
