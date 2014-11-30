@@ -1,8 +1,12 @@
 {
-  "name": "gulp-basic",
+  "name": "gulp-start",
   "version": "0.0.1",
   "main": "index.js",
-  "author": "",
+  "author": {
+    "name": "Federico Rampazzo",
+    "email": "frampone@gmail.com",
+    "url": "http://framp.me"
+  },
   "license": "MIT",
   "devDependencies": {
     "async": "^0.9.0",
