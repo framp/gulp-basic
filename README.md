@@ -122,7 +122,7 @@ Say goodbye to spaghetti-code! gulp-start relies on [browserify](http://browseri
 TODO
 
 ###Gulpfile
-gulp-start is, obviously, using [gulp](http://gulpjs.com/), an awesome streaming build system.
+gulp-start is, obviously, using [gulp](http://gulpjs.com/), the awesome streaming build system.
 
 The `gulpfile.js` is used to generate your application and work with it. If everything suits your taste you don't have to touch anything.
 
