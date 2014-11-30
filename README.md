@@ -32,7 +32,7 @@ It's a good practice to separate your data from your design. That's why gulp-sta
 
 We don't want your beautifully crafted website to have ugly ".html" URL.
 gulp-start will only generate `index.html` for `index.hbs` files (at any depth) in your `/templates` directory.
-Including partials is supported from the `partials` and `layouts` directories - and we're supporting layouts through [handlebars-layouts](https://www.npmjs.org/package/handlebars-layouts).
+Including partials is supported from the `partials` and `layouts` directories - and we're supporting layouts through [handlebars-layouts](https://github.com/shannonmoeller/handlebars-layouts).
 
     templates/layouts/main.hbs
     <html>
@@ -77,7 +77,10 @@ Data is language agnostic.
 
 ###Contents
 To define contents in different languages you simply create a `index.toml` file on the same path of your template file in `/contents/ln-LN/`, where `ln-LN` is the country-language choice of your language.
+
 The default language, will be generated in the root of the destination folder. All the other languages will live in `/ln-LN` subdirectories.
+
+The default language is the one whose directory in `/contents` starts with a `_`.
 
 You'll be able to use your strings in templates using the [handlebars-tr](https://github.com/framp/handlebars-tr) plugin. Your translations will have access to the whole context, letting you use variables in them.
 
@@ -100,6 +103,7 @@ You'll be able to use your strings in templates using the [handlebars-tr](https:
     {{/extend}}
 
 This small example will generate `$dest/index.html` in `en-US` and `$dest/it-IT/index.html` in `it-IT`.
+
 We chose [toml](https://github.com/toml-lang/toml) over [JSON](http://www.json.org/) for language files because it's easier for such a flat structure.
 
 ###Images
@@ -125,19 +129,29 @@ We believe that if you want to customize more your workflow, you should be able 
 The main gulpfile only defines the main commands you can run with gulp-start, delegating the bulk of the work to scripts contained in the `gulpfile` directory.
 
 ####templates.js
-TODO
+We load the languages from `/contents` and create a gulp stream for each language and setup handlebars and its helpers. Feel free to throw in more helpers if you need to.
+For each stream we load data and contents with [gulp-data](https://github.com/colynb/gulp-data) and pipe everything to [gulp-handlebars-html](https://github.com/framp/gulp-handlebars-html).
 
 ####images.js
-TODO
+This one is easy: we just use [imagemin](https://github.com/sindresorhus/gulp-imagemin) to compress our images.
 
 ####stylesheets.js
 TODO
 
 ####scripts.s
+`browserify` on your `index.js` and `uglify`
 TODO
 
 ####misc.js
 TODO
+
+###A note on cache and remember
+We use [gulp-cached](https://github.com/wearefractal/gulp-cached) and [gulp-remember](https://github.com/ahaurw01/gulp-remember) to reduce the amount of unneeded work done when rebuilding files.
+
+Unfortunately this is not always trivial and we, currently, can't use that when a task has external untracked dependencies (eg. a file which includes other files and which needs to be recreated when one of its dependencies update).
+
+###A note on clean tasks
+The clean tasks should be straightforward. We do roughly the same thing as the `process-` task while stripping all the gulp plugins who actually do something to the file contents. After `gulp.dest` we use [vinyl-paths](https://github.com/sindresorhus/vinyl-paths) to retrieve our paths and just pass them to `fs.unlink`.
 
 ##License
 MIT
