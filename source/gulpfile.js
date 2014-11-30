@@ -68,7 +68,7 @@ gulp.task('process-stylesheets', function() {
     .pipe(connect.reload());
 });
 gulp.task('clean-stylesheets', function() {
-  return gulp.src('stylesheets/**/index.scss')
+  return gulp.src('stylesheets/**/index.scss', {read: false})
     .pipe(rename({
       extname: ".css"
     }))
@@ -97,7 +97,7 @@ gulp.task('process-scripts', function() {
     .pipe(connect.reload());
 });
 gulp.task('clean-scripts', function() {
-  return gulp.src('scripts/**/index.js')
+  return gulp.src('scripts/**/index.js', {read: false})
     .pipe(gulp.dest(dest + '/scripts'))
     .pipe(vinylPaths(fs.unlink))
     .pipe(rename({
@@ -124,7 +124,7 @@ gulp.task('process-images', function() {
     .pipe(connect.reload());
 });
 gulp.task('clean-images', function() {
-  return gulp.src('images/**/*')
+  return gulp.src('images/**/*', {read: false})
     .pipe(rename({
       suffix: '.v' + version + '.min'
     }))
@@ -158,18 +158,20 @@ gulp.task('process-templates', function(cb) {
       }))
       .pipe(gulp.dest(languageDest))
       .pipe(connect.reload())
+      .on('data', function() {})
       .on('end', done);
   }, cb);
 });
 gulp.task('clean-templates', function(cb) {
   async.map(languages, function(language, done){
     var languageDest = dest + (language !== defaultLanguage ? '/' + language : '');
-    gulp.src('templates/**/index.hbs')
+    gulp.src('templates/**/index.hbs', {read: false})
       .pipe(rename({
         extname: ".html"
       }))
       .pipe(gulp.dest(languageDest))
       .pipe(vinylPaths(fs.unlink))
+      .on('data', function() {})
       .on('end', done);
   }, cb);
 });
