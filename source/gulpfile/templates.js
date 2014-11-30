@@ -5,12 +5,7 @@ var async = require('async');
 var topl = require('topl');
 var Handlebars = require('handlebars');
 require('handlebars-layouts')(Handlebars);
-Handlebars.registerHelper('tr', function(context, options){
-  if (!options.data.root.__language[context])
-    return options.fn(this);
-  var template = Handlebars.compile(options.data.root.__language[context]);
-  return template(options.data.root);  
-});
+require('handlebars-tr')(Handlebars);
 
 var data = require('gulp-data');
 var handlebars = require('gulp-handlebars-html')();
