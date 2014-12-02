@@ -1,5 +1,7 @@
 var fs = require('fs');
 
+var gulpif = require('gulp-if');
+var debug = require('gulp-debug');
 var sourcemaps = require('gulp-sourcemaps');
 var sass = require('gulp-sass');
 var rename = require('gulp-rename');
@@ -12,6 +14,7 @@ var vinylPaths = require('vinyl-paths');
 module.exports = function(gulp, $){
   gulp.task('process-stylesheets', function() {
     return gulp.src('stylesheets/**/index.scss')
+      .pipe(gulpif($.debug, debug({title: 'stylesheets', verbose: true})))      
       .pipe(sourcemaps.init())
       .pipe(sass())
       .pipe(sourcemaps.write())
@@ -27,6 +30,7 @@ module.exports = function(gulp, $){
   });
   gulp.task('clean-stylesheets', function() {
     return gulp.src('stylesheets/**/index.scss', {read: false})
+      .pipe(gulpif($.debug, debug({title: 'stylesheets', verbose: true})))      
       .pipe(rename({
         extname: ".css"
       }))

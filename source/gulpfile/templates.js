@@ -7,11 +7,24 @@ var Handlebars = require('handlebars');
 require('handlebars-layouts')(Handlebars);
 require('handlebars-tr')(Handlebars);
 
+var gulpif = require('gulp-if');
+var debug = require('gulp-debug');
 var data = require('gulp-data');
 var handlebars = require('gulp-handlebars-html')();
 var rename = require('gulp-rename');
 var connect = require('gulp-connect');
 var vinylPaths = require('vinyl-paths');
+
+var readTOMLSync = function(file){
+  try{
+    return topl.parse(fs.readFileSync(file));
+  } catch(e) {}
+};
+var readJSONSync = function(file){
+  try{
+    return JSON.parse(fs.readFileSync(file));
+  } catch(e) {}
+};
 
 module.exports = function(gulp, $){ 
   var languages = fs.readdirSync('./contents');
@@ -20,6 +33,9 @@ module.exports = function(gulp, $){
     if (language[0]==='_')
       defaultLanguage = language;
   });
+  var templateNameRegex = new RegExp(
+    '(^' + path.join($.root, 'templates') + 
+    '|\.[^\.]+$)', 'g');
   
   gulp.task('process-templates', function(cb) {
     var options = {
@@ -31,15 +47,14 @@ module.exports = function(gulp, $){
     }
     async.map(languages, function(language, done){
       var languageDest = $.dest + (language !== defaultLanguage ? '/' + language : '');
-      gulp.src('templates/**/index.hbs')
+      return gulp.src('templates/**/index.hbs')
+        .pipe(gulpif($.debug, debug({title: 'templates-' + language, verbose: true})))        
         .pipe(data(function(file) {
-          var name = path.basename(file.path, path.extname(file.path));
-          var data = './data/' + name + '.json';
-          var result = JSON.parse(fs.readFileSync(data));
-          var contentPartials = './contents/' + language + '/partials.toml';
-          var content = './contents/' + language + '/' + name + '.toml';
-          result.__language = topl.parse(fs.readFileSync(contentPartials));
-          _.merge(result.__language, topl.parse(fs.readFileSync(content)));
+          var result = { __language: {} };
+          var name = file.path.replace(templateNameRegex,'');
+          _.merge(result, readJSONSync('./data' + path + '.json'));
+          _.merge(result.__language, readTOMLSync('./contents/' + language + '/partials.toml'));
+          _.merge(result.__language, readTOMLSync('./contents/' + language + name + '.toml'));
           return result;
         }))
         .pipe(handlebars(context, options))
@@ -55,7 +70,8 @@ module.exports = function(gulp, $){
   gulp.task('clean-templates', function(cb) {
     async.map(languages, function(language, done){
       var languageDest = $.dest + (language !== defaultLanguage ? '/' + language : '');
-      gulp.src('templates/**/index.hbs', {read: false})
+      return gulp.src('templates/**/index.hbs', {read: false})
+        .pipe(gulpif($.debug, debug({title: 'templates' + language, verbose: true})))        
         .pipe(rename({
           extname: ".html"
         }))

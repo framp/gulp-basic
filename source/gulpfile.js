@@ -5,7 +5,9 @@ var gulp = require('gulp');
 var $ = {
   dest: argv['dest'] || '..',
   version: argv['version'] || 0,
-  environment: process.env.NODE_ENV || argv['environment'] || 'development'
+  debug: argv['debug'] || false,
+  environment: process.env.NODE_ENV || argv['environment'] || 'development',
+  root: __dirname
 };
 
 ['images', 'misc', 'scripts', 

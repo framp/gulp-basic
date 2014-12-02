@@ -1,8 +1,10 @@
 var fs = require('fs');
+var pngcrush = require('imagemin-pngcrush');
 
+var gulpif = require('gulp-if');
+var debug = require('gulp-debug');
 var cache = require('gulp-cached');
 var imagemin = require('gulp-imagemin');
-var pngcrush = require('imagemin-pngcrush');
 var remember = require('gulp-remember');
 var rename = require('gulp-rename');
 var connect = require('gulp-connect');
@@ -11,6 +13,7 @@ var vinylPaths = require('vinyl-paths');
 module.exports = function(gulp, $){
   gulp.task('process-images', function() {
     return gulp.src('images/**/*')
+      .pipe(gulpif($.debug, debug({title: 'images', verbose: true})))
       .pipe(cache('images'))
       .pipe(imagemin({
         progressive: true,
@@ -28,6 +31,7 @@ module.exports = function(gulp, $){
   });
   gulp.task('clean-images', function() {
     return gulp.src('images/**/*', {read: false})
+      .pipe(gulpif($.debug, debug({title: 'images', verbose: true})))
       .pipe(rename({
         suffix: '.v' + $.version + '.min'
       }))

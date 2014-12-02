@@ -1,5 +1,7 @@
 var fs = require('fs');
 
+var gulpif = require('gulp-if');
+var debug = require('gulp-debug');
 var browserify = require('gulp-browserify');
 var rename = require('gulp-rename');
 var cache = require('gulp-cached');
@@ -11,6 +13,7 @@ var vinylPaths = require('vinyl-paths');
 module.exports = function(gulp, $){
   gulp.task('process-scripts', function() {
     return gulp.src('scripts/**/index.js')
+      .pipe(gulpif($.debug, debug({title: 'scripts', verbose: true})))      
       .pipe(browserify({
         transform: ['debowerify'],
         debug: true
@@ -27,6 +30,7 @@ module.exports = function(gulp, $){
   });
   gulp.task('clean-scripts', function() {
     return gulp.src('scripts/**/index.js', {read: false})
+      .pipe(gulpif($.debug, debug({title: 'scripts', verbose: true})))      
       .pipe(gulp.dest($.dest + '/scripts'))
       .pipe(vinylPaths(fs.unlink))
       .pipe(rename({
