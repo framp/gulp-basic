@@ -10,27 +10,36 @@ var minifycss = require('gulp-minify-css');
 var connect = require('gulp-connect');
 var vinylPaths = require('vinyl-paths');
 
-module.exports = function(gulp, $){
+module.exports = function(gulp, $) {
   gulp.task('process-stylesheets', function() {
     if ($.environment === 'development')
       return gulp.src('stylesheets/**/index.scss')
-        .pipe(gulpif($.debug, debug({title: 'stylesheets', verbose: true})))
+        .pipe(gulpif($.debug, debug({
+          title: 'stylesheets',
+          verbose: true
+        })))
         .pipe(sourcemaps.init())
-        .pipe(sass({ 
-          errLogToConsole: true, 
-          includePaths: [ $.root + '/bower_components' ]
+        .pipe(sass({
+          errLogToConsole: true,
+          includePaths: [$.root + '/bower_components']
         }))
         .pipe(sourcemaps.write())
         .pipe(gulp.dest($.dest + '/stylesheets'))
         .pipe(connect.reload());
     if ($.environment === 'production')
       return gulp.src('stylesheets/**/index.scss')
-        .pipe(gulpif($.debug, debug({title: 'stylesheets', verbose: true})))   
-        .pipe(sass({ 
-          errLogToConsole: true, 
-          includePaths: [ $.root + '/bower_components' ]
+        .pipe(gulpif($.debug, debug({
+          title: 'stylesheets',
+          verbose: true
+        })))
+        .pipe(sass({
+          errLogToConsole: true,
+          includePaths: [$.root + '/bower_components']
         }))
-        .pipe(minifycss({ cache:true, processImport: false }))
+        .pipe(minifycss({
+          cache: true,
+          processImport: false
+        }))
         .pipe(autoprefixer())
         .pipe(rename({
           extname: ".css",
@@ -38,9 +47,15 @@ module.exports = function(gulp, $){
         }))
         .pipe(gulp.dest($.dest + '/stylesheets/'));
   });
+  
   gulp.task('clean-stylesheets', function() {
-    return gulp.src('stylesheets/**/index.scss', {read: false})
-      .pipe(gulpif($.debug, debug({title: 'stylesheets', verbose: true})))      
+    return gulp.src('stylesheets/**/index.scss', {
+        read: false
+      })
+      .pipe(gulpif($.debug, debug({
+        title: 'stylesheets',
+        verbose: true
+      })))
       .pipe(rename({
         extname: ".css"
       }))

@@ -10,11 +10,14 @@ var remember = require('gulp-remember');
 var connect = require('gulp-connect');
 var vinylPaths = require('vinyl-paths');
 
-module.exports = function(gulp, $){
+module.exports = function(gulp, $) {
   gulp.task('process-scripts', function() {
     if ($.environment === 'development')
       return gulp.src('scripts/**/index.js')
-        .pipe(gulpif($.debug, debug({title: 'scripts', verbose: true})))      
+        .pipe(gulpif($.debug, debug({
+          title: 'scripts',
+          verbose: true
+        })))
         .pipe(browserify({
           transform: ['debowerify'],
           debug: true
@@ -23,7 +26,10 @@ module.exports = function(gulp, $){
         .pipe(connect.reload());
     if ($.environment === 'production')
       return gulp.src('scripts/**/index.js')
-        .pipe(gulpif($.debug, debug({title: 'stylesheets', verbose: true})))      
+        .pipe(gulpif($.debug, debug({
+          title: 'stylesheets',
+          verbose: true
+        })))
         .pipe(cache('scripts-uglify'))
         .pipe(uglify())
         .pipe(remember('scripts-uglify'))
@@ -33,9 +39,15 @@ module.exports = function(gulp, $){
         .pipe(gulp.dest($.dest + '/scripts/'))
         .pipe(connect.reload());
   });
+  
   gulp.task('clean-scripts', function() {
-    return gulp.src('scripts/**/index.js', {read: false})
-      .pipe(gulpif($.debug, debug({title: 'scripts', verbose: true})))      
+    return gulp.src('scripts/**/index.js', {
+        read: false
+      })
+      .pipe(gulpif($.debug, debug({
+        title: 'scripts',
+        verbose: true
+      })))
       .pipe(gulp.dest($.dest + '/scripts'))
       .pipe(vinylPaths(fs.unlink))
       .pipe(rename({

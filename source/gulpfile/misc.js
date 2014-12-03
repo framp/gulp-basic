@@ -3,10 +3,10 @@ var fs = require('fs');
 var connect = require('gulp-connect');
 var open = require('gulp-open');
 
-module.exports = function(gulp, $){
+module.exports = function(gulp, $) {
   if (fs.existsSync($.dest + '/build'))
     $.version = parseInt(fs.readFileSync($.dest + '/build'));
-  
+
   gulp.task('prepare-deploy', function() {
     $.environment = 'production';
     $.version += 1;
@@ -26,4 +26,4 @@ module.exports = function(gulp, $){
         url: 'http://localhost:8080'
       }));
   });
-}; 
+};

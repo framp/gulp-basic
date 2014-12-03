@@ -15,28 +15,28 @@ var rename = require('gulp-rename');
 var connect = require('gulp-connect');
 var vinylPaths = require('vinyl-paths');
 
-var readTOMLSync = function(file){
-  try{
+var readTOMLSync = function(file) {
+  try {
     return topl.parse(fs.readFileSync(file));
-  } catch(e) {}
+  } catch (e) {}
 };
-var readJSONSync = function(file){
-  try{
+var readJSONSync = function(file) {
+  try {
     return JSON.parse(fs.readFileSync(file));
-  } catch(e) {}
+  } catch (e) {}
 };
 
-module.exports = function(gulp, $){ 
+module.exports = function(gulp, $) {
   var languages = fs.readdirSync('./contents');
   var defaultLanguage = languages[0];
-  languages.forEach(function(language, key){
-    if (language[0]==='_')
+  languages.forEach(function(language, key) {
+    if (language[0] === '_')
       defaultLanguage = language;
   });
   var templateNameRegex = new RegExp(
-    '(^' + path.join($.root, 'templates') + 
+    '(^' + path.join($.root, 'templates') +
     '|\.[^\.]+$)', 'g');
-  
+
   gulp.task('process-templates', function(cb) {
     var options = {
       partialsDirectory: ['./templates/partials', './templates/layouts']
@@ -45,13 +45,18 @@ module.exports = function(gulp, $){
       __version: $.version,
       __debug: $.environment !== 'production'
     }
-    async.map(languages, function(language, done){
+    async.map(languages, function(language, done) {
       var languageDest = $.dest + (language !== defaultLanguage ? '/' + language : '');
       return gulp.src('templates/**/index.hbs')
-        .pipe(gulpif($.debug, debug({title: 'templates-' + language, verbose: true})))        
+        .pipe(gulpif($.debug, debug({
+          title: 'templates-' + language,
+          verbose: true
+        })))
         .pipe(data(function(file) {
-          var result = { __language: {} };
-          var name = file.path.replace(templateNameRegex,'');
+          var result = {
+            __language: {}
+          };
+          var name = file.path.replace(templateNameRegex, '');
           _.merge(result, readJSONSync('./data' + path + '.json'));
           _.merge(result.__language, readTOMLSync('./contents/' + language + '/partials.toml'));
           _.merge(result.__language, readTOMLSync('./contents/' + language + name + '.toml'));
@@ -67,11 +72,17 @@ module.exports = function(gulp, $){
         .on('end', done);
     }, cb);
   });
+  
   gulp.task('clean-templates', function(cb) {
-    async.map(languages, function(language, done){
+    async.map(languages, function(language, done) {
       var languageDest = $.dest + (language !== defaultLanguage ? '/' + language : '');
-      return gulp.src('templates/**/index.hbs', {read: false})
-        .pipe(gulpif($.debug, debug({title: 'templates' + language, verbose: true})))        
+      return gulp.src('templates/**/index.hbs', {
+          read: false
+        })
+        .pipe(gulpif($.debug, debug({
+          title: 'templates' + language,
+          verbose: true
+        })))
         .pipe(rename({
           extname: ".html"
         }))
