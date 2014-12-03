@@ -12,6 +12,7 @@ var debug = require('gulp-debug');
 var data = require('gulp-data');
 var handlebars = require('gulp-handlebars-html')();
 var rename = require('gulp-rename');
+var minifyHTML = require('gulp-minify-html');
 var connect = require('gulp-connect');
 var vinylPaths = require('vinyl-paths');
 
@@ -74,6 +75,7 @@ module.exports = function(gulp, $) {
         .pipe(rename({
           extname: ".html"
         }))
+        .pipe(gulpif($.environment==='production', minifyHTML()))
         .pipe(gulp.dest(languageDest))
         .pipe(connect.reload())
         .on('data', function() {})
