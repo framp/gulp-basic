@@ -13,23 +13,27 @@ var vinylPaths = require('vinyl-paths');
 module.exports = function(gulp, $) {
   gulp.task('process-scripts', function() {
     if ($.environment === 'development')
-      return gulp.src('scripts/**/index.js')
+      return gulp.src('scripts/**/index.js', { read: false })
         .pipe(gulpif($.debug, debug({
           title: 'scripts',
           verbose: true
         })))
         .pipe(browserify({
-          transform: ['debowerify'],
+          transform: ['debowerify', 'deamdify'],
           debug: true
         }))
         .pipe(gulp.dest($.dest + '/scripts'))
         .pipe(connect.reload());
     if ($.environment === 'production')
-      return gulp.src('scripts/**/index.js')
+      return gulp.src('scripts/**/index.js', { read: false })
         .pipe(gulpif($.debug, debug({
           title: 'stylesheets',
           verbose: true
         })))
+        .pipe(browserify({
+          transform: ['debowerify', 'deamdify'],
+          debug: true
+        }))
         .pipe(cache('scripts-uglify'))
         .pipe(uglify())
         .pipe(remember('scripts-uglify'))
