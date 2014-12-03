@@ -174,7 +174,7 @@ This one is easy: we just use [imagemin](https://github.com/sindresorhus/gulp-im
 ####stylesheets.js
 We're just using [gulp-sass](https://github.com/dlmanning/gulp-sass), [gulp-autoprefixer](https://github.com/sindresorhus/gulp-autoprefixer) and [gulp-minify-css](https://github.com/jonathanepollack/gulp-minify-css).
 
-####scripts.s
+####scripts.js
 We use [gulp-browserify] with the [bowerify](https://github.com/ninefold/bowerify) and the [deamdify](https://github.com/jaredhanson/deamdify) transforms.
 
 We compress everything using [gulp-uglify](https://github.com/terinjokes/gulp-uglify).
