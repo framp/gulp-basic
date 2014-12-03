@@ -2,6 +2,12 @@
 
 A good starting point for creating a static web application.
 
+##Requirements
+
+    npm install -g gulp bower
+
+Installing `bower` is not required, but heavily suggested.
+
 ##How to
 To fire up your project just move into the `source` directory and run `gulp` (or check out the full [Commands Reference](#commands-reference)).
 
@@ -100,13 +106,33 @@ This small example will generate `$dest/index.html` in `en-US` and `$dest/it-IT/
 We chose [toml](https://github.com/toml-lang/toml) over [JSON](http://www.json.org/) for language files because it's easier to use for such a flat structure.
 
 ###Images
-All the images you put inside will be optimized and copied to `$dest/images`. 
+All the images you put inside will be copied to `$dest/images`. 
 
-Oh, we'll also add a version number in production mode, so that browsers won't have cache problems.
+In production mode we'll copy an [optimized](https://github.com/imagemin/imagemin) image with a version number suffix, so that browsers won't have cache problems. The end result will be `/images/image.v1.png`.
  
 ###Stylesheets
-Thanks to [sass](http://sass-lang.com/) your stylesheets.
-TODO
+Thanks to [sass](http://sass-lang.com/) your stylesheets will have a nice readable structure. Screw the 5k LOC '.css`!
+
+Only `index.scss` files (at any depth, in every subdirectory) will be parsed and used to generate corrisponding `index.css` files. 
+
+In production mode we'll generate an [optimized](https://github.com/jakubpawlowicz/clean-css) and [autoprefixed](https://github.com/postcss/autoprefixer) file in `index.v1.min.css`.
+
+Our suggestion is to leverage the modularity of [sass](http://sass-lang.com/) and use the `index.scss` file only for `@import` of well named `sass` modules.
+
+If you need to import modules form thirdy-party you can install them using bower:
+
+    bower install --save meyer-reset
+
+And `@import` them directly:
+
+    index.scss
+    @import 'meyer-reset/stylesheets/meyer-reset';
+    @import 'colors';
+    @import 'general';
+    @import 'menu';
+    @import 'homepage';
+
+This is working only because `bower_components` is one of the `includedPaths` used by `libsass` when looking for a file.
 
 ###Scripts
 Say goodbye to spaghetti-code! gulp-start relies on [browserify](http://browserify.org/) to help you organize your code.
@@ -130,17 +156,20 @@ For each stream we load data and contents with [gulp-data](https://github.com/co
 This one is easy: we just use [imagemin](https://github.com/sindresorhus/gulp-imagemin) to compress our images.
 
 ####stylesheets.js
-TODO
+We're just using [gulp-sass](https://github.com/dlmanning/gulp-sass), [gulp-autoprefixer](https://github.com/sindresorhus/gulp-autoprefixer) and [gulp-minify-css]https://github.com/jonathanepollack/gulp-minify-css).
 
 ####scripts.s
 `browserify` on your `index.js` and `uglify`
 TODO
 
 ####misc.js
-TODO
+The tasks in misc are used to:
+ - increase the `version` and force the production `environment`
+ - setup the livereload server thanks to [gulp-connect](https://github.com/avevlad/gulp-connect)
+ - open a browser window with your project thanks to [gulp-open](https://github.com/stevelacy/gulp-open)
 
 ####A note on debug
-We use [gulp-debug](https://github.com/sindresorhus/gulp-debug) together with  [gulp-if](https://github.com/robrich/gulp-if) to help you debug your building process.
+We use [gulp-debug](https://github.com/sindresorhus/gulp-debug) together with  [gulp-if](https://github.com/robrich/gulp-if) to help you debug your building process only when you want to.
 
 ####A note on cache and remember
 We use [gulp-cached](https://github.com/wearefractal/gulp-cached) and [gulp-remember](https://github.com/ahaurw01/gulp-remember) to reduce the amount of unneeded work done when rebuilding files.
@@ -170,6 +199,13 @@ Passing parameters to gulp can be done to override some of the default values:
  - `--debug=false` will display debugging information about your building process
  - `--environment=development` will override your environment (which is `production` when you're deploying or `develpoment` when running all the other commands)
  - `NODE_ENV=production gulp...` is just another way to set the environment
+
+##Why did you bother writing all these little pesky details?
+I strongly feel like one of the major issues in nowadays frameworks is communication.
+
+Several frameworks abstract a lot of what they do without documenting stuff clearly enough; the result is a magic box users simply use without understanding. And no, they won't be happy after finding a bug and understanding they have no idea what the hell is happening.
+
+The solution is transparency.
 
 ##License
 MIT
