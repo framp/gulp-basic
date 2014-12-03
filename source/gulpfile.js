@@ -1,4 +1,3 @@
-//General
 var argv = require('minimist')(process.argv);
 var gulp = require('gulp');
 

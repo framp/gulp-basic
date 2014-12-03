@@ -12,22 +12,28 @@ var vinylPaths = require('vinyl-paths');
 
 module.exports = function(gulp, $){
   gulp.task('process-images', function() {
-    return gulp.src('images/**/*')
-      .pipe(gulpif($.debug, debug({title: 'images', verbose: true})))
-      .pipe(cache('images'))
-      .pipe(imagemin({
-        progressive: true,
-        svgoPlugins: [{
-          removeViewBox: false
-        }],
-        use: [pngcrush()]
-      }))
-      .pipe(remember('images'))
-      .pipe(rename({
-        suffix: '.v' + $.version + '.min'
-      }))
-      .pipe(gulp.dest($.dest + '/images/'))
-      .pipe(connect.reload());
+    if ($.environment === 'development') //TODO: maybe just link the directory?
+      return gulp.src('images/**/*')
+        .pipe(gulpif($.debug, debug({title: 'images', verbose: true})))
+        .pipe(gulp.dest($.dest + '/images/'))
+        .pipe(connect.reload());
+    if ($.environment === 'production')
+      return gulp.src('images/**/*')
+        .pipe(gulpif($.debug, debug({title: 'stylesheets', verbose: true})))      
+        .pipe(cache('images'))
+        .pipe(imagemin({
+          progressive: true,
+          svgoPlugins: [{
+            removeViewBox: false
+          }],
+          use: [pngcrush()]
+        }))
+        .pipe(remember('images'))
+        .pipe(rename({
+          suffix: '.v' + $.version + '.min'
+        }))
+        .pipe(gulp.dest($.dest + '/images/'))
+        .pipe(connect.reload());
   });
   gulp.task('clean-images', function() {
     return gulp.src('images/**/*', {read: false})
