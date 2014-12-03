@@ -12,7 +12,7 @@ var vinylPaths = require('vinyl-paths');
 
 module.exports = function(gulp, $) {
   gulp.task('process-images', function() {
-    if ($.environment === 'development') //TODO: maybe just link the directory?
+    if ($.environment === 'development') //TODO: just link the directory?
       return gulp.src('images/**/*')
       .pipe(gulpif($.debug, debug({
         title: 'images',

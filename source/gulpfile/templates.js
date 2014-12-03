@@ -39,14 +39,19 @@ module.exports = function(gulp, $) {
 
   gulp.task('process-templates', function(cb) {
     var options = {
-      partialsDirectory: ['./templates/partials', './templates/layouts']
+      partialsDirectory: [
+        './templates/partials', 
+        './templates/layouts'
+      ]
     };
     var context = {
       __version: $.version,
       __debug: $.environment !== 'production'
     }
     async.map(languages, function(language, done) {
-      var languageDest = $.dest + (language !== defaultLanguage ? '/' + language : '');
+      var languageDest = $.dest;
+      if (language !== defaultLanguage)
+        languageDest += '/' + language;
       return gulp.src('templates/**/index.hbs')
         .pipe(gulpif($.debug, debug({
           title: 'templates-' + language,
@@ -57,9 +62,12 @@ module.exports = function(gulp, $) {
             __language: {}
           };
           var name = file.path.replace(templateNameRegex, '');
-          _.merge(result, readJSONSync('./data' + path + '.json'));
-          _.merge(result.__language, readTOMLSync('./contents/' + language + '/partials.toml'));
-          _.merge(result.__language, readTOMLSync('./contents/' + language + name + '.toml'));
+          var dataPath = './data' + path + '.json';
+          var partialsPath = './contents/' + language + '/partials.toml';
+          var languagePath = './contents/' + language + name + '.toml';
+          _.merge(result, readJSONSync(dataPath));
+          _.merge(result.__language, readTOMLSync(partialsPath));
+          _.merge(result.__language, readTOMLSync(languagePath));
           return result;
         }))
         .pipe(handlebars(context, options))
@@ -75,7 +83,9 @@ module.exports = function(gulp, $) {
   
   gulp.task('clean-templates', function(cb) {
     async.map(languages, function(language, done) {
-      var languageDest = $.dest + (language !== defaultLanguage ? '/' + language : '');
+      var languageDest = $.dest;
+      if (language !== defaultLanguage)
+        languageDest += '/' + language;
       return gulp.src('templates/**/index.hbs', {
           read: false
         })
