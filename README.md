@@ -156,7 +156,7 @@ For each stream we load data and contents with [gulp-data](https://github.com/co
 This one is easy: we just use [imagemin](https://github.com/sindresorhus/gulp-imagemin) to compress our images.
 
 ####stylesheets.js
-We're just using [gulp-sass](https://github.com/dlmanning/gulp-sass), [gulp-autoprefixer](https://github.com/sindresorhus/gulp-autoprefixer) and [gulp-minify-css]https://github.com/jonathanepollack/gulp-minify-css).
+We're just using [gulp-sass](https://github.com/dlmanning/gulp-sass), [gulp-autoprefixer](https://github.com/sindresorhus/gulp-autoprefixer) and [gulp-minify-css](https://github.com/jonathanepollack/gulp-minify-css).
 
 ####scripts.s
 `browserify` on your `index.js` and `uglify`
