@@ -6,7 +6,7 @@ A good starting point for creating a static web application.
 
     npm install -g gulp bower
 
-Installing `bower` is not required, but heavily suggested.
+Installing [bower](http://bower.io/) is not required, but is heavily suggested.
 
 ##How to
 To fire up your project just move into the `source` directory and run `gulp` (or check out the full [Commands Reference](#commands-reference)).
@@ -14,13 +14,13 @@ To fire up your project just move into the `source` directory and run `gulp` (or
 The example project will get compiled and a browser window should open with your project.
 
 In the `source` directory you'll find several directories:
- - `templates`
- - `data` 
- - `contents`
- - `images`
- - `stylesheets`
- - `scripts`
- - `gulpfile`
+ - `templates`: [Handlebars](handlebarsjs.com) templates for your views
+ - `data`: [JSON](http://www.json.org/) data containing the data you want to display with your templates
+ - `contents`: [toml](https://github.com/toml-lang/toml) files containing your localized strings
+ - `images`: Images needed by your application
+ - `stylesheets`: [sass](http://sass-lang.com/) stylesheets used to define the look of your application
+ - `scripts`: JavaScript files to embed in your application
+ - `gulpfile`: The script which make everything automatic (that you shouldn't touch)
 
 By editing and creating files inside these directory you'll be able to create a web application in an efficient way.
 
@@ -119,7 +119,7 @@ In production mode we'll generate an [optimized](https://github.com/jakubpawlowi
 
 Our suggestion is to leverage the modularity of [sass](http://sass-lang.com/) and use the `index.scss` file only for `@import` of well named `sass` modules.
 
-If you need to import modules form thirdy-party you can install them using bower:
+If you need to import modules form thirdy-party you can install them using [bower](http://bower.io/):
 
     bower install --save meyer-reset
 
@@ -135,8 +135,24 @@ And `@import` them directly:
 This is working only because `bower_components` is one of the `includedPaths` used by `libsass` when looking for a file.
 
 ###Scripts
-Say goodbye to spaghetti-code! gulp-start relies on [browserify](http://browserify.org/) to help you organize your code.
-TODO
+Say goodbye to spaghetti-code! gulp-start relies on [browserify](http://browserify.org/) to help you organize your code following CommonJS syntax.
+
+Like in all the other modules, only your `index.js` files, at any depth,  will be used to generate files. We suggest you to use your `index.js` files only for importing other scripts.
+
+    index.js
+    require('./core');
+    require('./routes');
+    
+Again, feel free to install packages from [bower](http://bower.io/) (even the ones who are using AMD).
+
+    bower install --save jquery
+    
+And use them freely:
+
+    var $ = require('jquery');
+    $(document).ready(function(){
+      $(document.body).css('background', '#ff6699');
+    });
 
 ###Gulpfile
 gulp-start is, obviously, using [gulp](http://gulpjs.com/), the awesome streaming build system.
@@ -159,8 +175,9 @@ This one is easy: we just use [imagemin](https://github.com/sindresorhus/gulp-im
 We're just using [gulp-sass](https://github.com/dlmanning/gulp-sass), [gulp-autoprefixer](https://github.com/sindresorhus/gulp-autoprefixer) and [gulp-minify-css](https://github.com/jonathanepollack/gulp-minify-css).
 
 ####scripts.s
-`browserify` on your `index.js` and `uglify`
-TODO
+We use [gulp-browserify] with the [bowerify](https://github.com/ninefold/bowerify) and the [deamdify](https://github.com/jaredhanson/deamdify) transforms.
+
+We compress everything using [gulp-uglify](https://github.com/terinjokes/gulp-uglify).
 
 ####misc.js
 The tasks in misc are used to:
