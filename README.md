@@ -139,15 +139,15 @@ TODO
 ####misc.js
 TODO
 
-###A note on debug
+####A note on debug
 We use [gulp-debug](https://github.com/sindresorhus/gulp-debug) together with  [gulp-if](https://github.com/robrich/gulp-if) to help you debug your building process.
 
-###A note on cache and remember
+####A note on cache and remember
 We use [gulp-cached](https://github.com/wearefractal/gulp-cached) and [gulp-remember](https://github.com/ahaurw01/gulp-remember) to reduce the amount of unneeded work done when rebuilding files.
 
 Unfortunately this is not always trivial and we, currently, can't use that when a task has external untracked dependencies (eg. a file which includes other files and which needs to be recreated when one of its dependencies update).
 
-###A note on clean tasks
+####A note on clean tasks
 The clean tasks should be straightforward. We do roughly the same thing as the `process-` task while stripping all the gulp plugins who actually do something to the file contents. After `gulp.dest` we use [vinyl-paths](https://github.com/sindresorhus/vinyl-paths) to retrieve our paths and just pass them to `fs.unlink`.
 
 ##Commands Reference
