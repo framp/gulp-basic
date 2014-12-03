@@ -2,8 +2,12 @@
 
 A good starting point for creating a static web application.
 
-##What do you get
-As soon as you start with your project you'll find several directories:
+##How to
+To fire up your project just move into the `source` directory and run `gulp` (or check out the full [Commands Reference](#commands-reference)).
+
+The example project will get compiled and a browser window should open with your project.
+
+In the `source` directory you'll find several directories:
  - `templates`
  - `data` 
  - `contents`
@@ -12,27 +16,14 @@ As soon as you start with your project you'll find several directories:
  - `scripts`
  - `gulpfile`
 
-###How to
-Before diving in the directories structure, we're going to list all the commands you can run with gulp-start:
- - `gulp`: build the application in development mode and launch a livereload server
- - `gulp deploy`: `clean-all` and build the application in production mode and increment the `version` of the application
- - `gulp clean-all`: call all the `clean-*` tasks and clean all the files
- - `gulp process-all`: call all the `process-*` tasks and build all the files needed
- - `gulp process-templates`: build .html files from your .hbs templates
- - `gulp process-images`: optimize images files
- - `gulp process-stylesheets`: build .css files from your .scss stylesheets
- - `gulp process-scripts`: build .js files from your scripts
- - `gulp clean-templates`: clean templates generated with `process-templats`
- - `gulp clean-images`: clean images generated with `process-imags`
- - `gulp clean-stylesheets`: clean stylesheets generated with `process-stylesheets`
- - `gulp clean-scripts`: clean scripts generated with `process-scripts`
+By editing and creating files inside these directory you'll be able to create a web application in an efficient way.
 
 ###Templates
-It's a good practice to separate your data from your design. That's why gulp-start includes [Handlebars](handlebarsjs.com) templates.
-
-We don't want your beautifully crafted website to have ugly ".html" URL.
-gulp-start will only generate `index.html` for `index.hbs` files (at any depth) in your `/templates` directory.
+It's a good practice to separate your data from your design. That's why gulp-start includes [Handlebars](handlebarsjs.com) templates to generate your HTML.
 Including partials is supported from the `partials` and `layouts` directories - and we're supporting layouts through [handlebars-layouts](https://github.com/shannonmoeller/handlebars-layouts).
+
+One more thing: We don't want your beautifully crafted website to have ugly ".html" URL.
+gulp-start will only generate `index.html` for `index.hbs` files (at any depth) in your `/templates` directory.
 
     templates/layouts/main.hbs
     <html>
@@ -148,6 +139,9 @@ TODO
 ####misc.js
 TODO
 
+###A note on debug
+We use [gulp-debug](https://github.com/sindresorhus/gulp-debug) together with  [gulp-if](https://github.com/robrich/gulp-if) to help you debug your building process.
+
 ###A note on cache and remember
 We use [gulp-cached](https://github.com/wearefractal/gulp-cached) and [gulp-remember](https://github.com/ahaurw01/gulp-remember) to reduce the amount of unneeded work done when rebuilding files.
 
@@ -155,6 +149,27 @@ Unfortunately this is not always trivial and we, currently, can't use that when 
 
 ###A note on clean tasks
 The clean tasks should be straightforward. We do roughly the same thing as the `process-` task while stripping all the gulp plugins who actually do something to the file contents. After `gulp.dest` we use [vinyl-paths](https://github.com/sindresorhus/vinyl-paths) to retrieve our paths and just pass them to `fs.unlink`.
+
+##Commands Reference
+ - `gulp`: build the application in development mode and launch a livereload server
+ - `gulp deploy`: `clean-all` and build the application in production mode and increment the `version` of the application (the `version` is used only in when deploying)
+ - `gulp clean-all`: call all the `clean-*` tasks and clean all the files
+ - `gulp process-all`: call all the `process-*` tasks and build all the files needed
+ - `gulp process-templates`: build .html files from your .hbs templates
+ - `gulp process-images`: optimize images files
+ - `gulp process-stylesheets`: build .css files from your .scss stylesheets
+ - `gulp process-scripts`: build .js files from your scripts
+ - `gulp clean-templates`: clean templates generated with `process-templats`
+ - `gulp clean-images`: clean images generated with `process-imags`
+ - `gulp clean-stylesheets`: clean stylesheets generated with `process-stylesheets`
+ - `gulp clean-scripts`: clean scripts generated with `process-scripts`
+
+Passing parameters to gulp can be done to override some of the default values:
+ - `--dest=..` will override the destination in which your file are generated
+ - `--version=0` will override the `version`
+ - `--debug=false` will display debugging information about your building process
+ - `--environment=development` will override your environment (which is `production` when you're deploying or `develpoment` when running all the other commands)
+ - `NODE_ENV=production gulp...` is just another way to set the environment
 
 ##License
 MIT
