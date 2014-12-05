@@ -1,4 +1,4 @@
-#gulp-start
+#in-a-gulp
 
 A good starting point for creating a static web application.
 
@@ -25,11 +25,11 @@ In the `source` directory you'll find several directories:
 By editing and creating files inside these directory you'll be able to create a web application in an efficient way.
 
 ###Templates
-It's a good practice to separate your data from your design. That's why gulp-start includes [Handlebars](handlebarsjs.com) templates to generate your HTML.
+It's a good practice to separate your data from your design. That's why in-a-gulp includes [Handlebars](handlebarsjs.com) templates to generate your HTML.
 Including partials is supported from the `partials` and `layouts` directories - and we're supporting layouts through [handlebars-layouts](https://github.com/shannonmoeller/handlebars-layouts).
 
 One more thing: We don't want your beautifully crafted website to have ugly ".html" URL.
-gulp-start will only generate `index.html` for `index.hbs` files (at any depth) in your `/templates` directory.
+in-a-gulp will only generate `index.html` for `index.hbs` files (at any depth) in your `/templates` directory.
 
     templates/layouts/main.hbs
     <html>
@@ -135,7 +135,7 @@ And `@import` them directly:
 This is working only because `bower_components` is one of the `includedPaths` used by `libsass` when looking for a file.
 
 ###Scripts
-Say goodbye to spaghetti-code! gulp-start relies on [browserify](http://browserify.org/) to help you organize your code following CommonJS syntax.
+Say goodbye to spaghetti-code! in-a-gulp relies on [browserify](http://browserify.org/) to help you organize your code following CommonJS syntax.
 
 Like in all the other modules, only your `index.js` files, at any depth,  will be used to generate files. We suggest you to use your `index.js` files only for importing other scripts.
 
@@ -155,13 +155,13 @@ And use them freely:
     });
 
 ###Gulpfile
-gulp-start is, obviously, using [gulp](http://gulpjs.com/), the awesome streaming build system.
+in-a-gulp is, obviously, using [gulp](http://gulpjs.com/), the awesome streaming build system.
 
 The `gulpfile.js` is used to generate your application and work with it. If everything suits your taste you don't have to touch anything.
 
 We believe that if you want to customize more your workflow, you should be able to do it.
 
-The main gulpfile only defines the main commands you can run with gulp-start, delegating the bulk of the work to scripts contained in the `gulpfile` directory.
+The main gulpfile only defines the main commands you can run with in-a-gulp, delegating the bulk of the work to scripts contained in the `gulpfile` directory.
 
 ####templates.js
 We load the languages from `/contents` and create a gulp stream for each language and setup handlebars and its helpers. Feel free to throw in more helpers if you need to.
