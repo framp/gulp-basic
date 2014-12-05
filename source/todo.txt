@@ -1,1 +1,6 @@
 gulp-handlebars
+fonts -> fontina
+extra directory
+clean directories
+link images and extra in development
+reactify, coffify, etc? or keep it clean??
