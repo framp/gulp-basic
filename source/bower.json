@@ -1,8 +1,9 @@
 {
-  "name": "honesign",
+  "name": "example-in-a-gulp",
   "version": "0.0.0",
+  "homepage": "https://github.com/framp/in-a-gulp",
   "authors": [
-    "Luca <honeaven@gmail.com>"
+    "Federico Rampazzo <frampone@gmail.com>"
   ],
   "license": "MIT",
   "private": true,
@@ -14,7 +15,7 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "~3.1.1",
-    "meyer-reset": "*"
+    "meyer-reset": "*",
+    "jquery": ">= 1.9.0"
   }
 }
