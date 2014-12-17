@@ -214,7 +214,7 @@ Passing parameters to gulp can be done to override some of the default values:
  - `--dest=..` will override the destination in which your file are generated
  - `--version=0` will override the `version`
  - `--debug=false` will display debugging information about your building process
- - `--environment=development` will override your environment (which is `production` when you're deploying or `develpoment` when running all the other commands)
+ - `--environment=development` will override your environment (which is `production` when you're deploying or `development` when running all the other commands)
  - `NODE_ENV=production gulp...` is just another way to set the environment
 
 ##Why did you bother writing all these little pesky details?
